@@ -19,6 +19,7 @@ void UOpenDoorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	Chiave = GetWorld()->GetFirstPlayerController()->GetPawn();
+	StartRotation = AntaDaAprire->GetComponentRotation();
 
 	
 
@@ -30,11 +31,38 @@ void UOpenDoorComponent::BeginPlay()
 
 }
 
-void UOpenDoorComponent::Opendoor()
+void UOpenDoorComponent::OpenDoor(float TD)
 {
-	FRotator StartRot = AntaDaAprire->GetComponentRotation();
-	StartRot.Yaw -= 90;
-	AntaDaAprire->SetWorldRotation(StartRot);
+
+	FRotator ActualRot = AntaDaAprire->GetComponentRotation();
+
+	if (ActualRot.Yaw > StartRotation.Yaw - OpenDeg)
+	{
+		ActualRot.Yaw -= OpenDeg * TD;
+		AntaDaAprire->SetWorldRotation(ActualRot);
+	}
+	else bClose = false;
+
+}
+
+
+void UOpenDoorComponent::CloseDoor(float TD)
+{
+
+	FRotator ActualRot = AntaDaAprire->GetComponentRotation();
+
+	if (ActualRot.Yaw < StartRotation.Yaw)
+	{
+		ActualRot.Yaw += OpenDeg * TD;
+		AntaDaAprire->SetWorldRotation(ActualRot);
+	}
+	else bClose = true;
+
+
+
+	
+
+
 
 }
 
@@ -45,19 +73,34 @@ void UOpenDoorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	
+
 	if (!Chiave || !Attivatore) return;
 
-	if (Attivatore->IsOverlappingActor(Chiave)&& bClose)
+	if (Attivatore->IsOverlappingActor(Chiave))
 	{
-
-		Opendoor();
-		bClose = false;
-
+		if (bClose) OpenDoor(DeltaTime);
+	}
+	else
+	{
+		if (!bClose) CloseDoor(DeltaTime);
 	}
 
+	
 
 
 
+
+
+
+	
+
+	
+	
+
+
+	
+
+	
 
 
 

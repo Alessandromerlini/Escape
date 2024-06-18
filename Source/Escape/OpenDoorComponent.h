@@ -27,6 +27,7 @@ public:
 	AActor* Chiave; // memorizzero l'oggetto che entrato nel volume apre la porta
 
 	bool bClose = true;
+	FRotator StartRotation;
 
 
 
@@ -39,7 +40,15 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void Opendoor();
+	void OpenDoor(float TD);
+
+	void CloseDoor(float TD);
+
+	UPROPERTY(EditAnywhere)
+	float OpenDeg;
+
+
+
 
 public:	
 	// Called every frame
